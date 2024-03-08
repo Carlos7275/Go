@@ -1,0 +1,69 @@
+basePath: /api
+definitions:
+  requests.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact: {}
+  description: Ejemplo de API en Go Hecha por Carlos Sandoval.
+  title: Swagger Golang Api
+paths:
+  /v1/auth/login/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: login  request
+        in: body
+        name: Login
+        required: true
+        schema:
+          $ref: '#/definitions/requests.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - Auth
+  /v1/auth/me/:
+    get:
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - Bearer: []
+      summary: Me
+      tags:
+      - Auth
+  /v1/hw/:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping example
+      tags:
+      - example
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

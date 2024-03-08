@@ -12,9 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
-func DBConnection() {
+func DBConnection() *gorm.DB {
 	// Cargar variables de entorno desde el archivo .env
 	err := godotenv.Load()
 	if err != nil {
@@ -33,7 +31,7 @@ func DBConnection() {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", HOST, USER, PASS, DBNAME, PORT)
 
 	// Establecer la conexión a la base de datos principal
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -43,7 +41,7 @@ func DBConnection() {
 		panic(err.Error())
 	}
 	if migrate {
-		DB.AutoMigrate(&migrations.Roles{}, &migrations.Generos{}, &migrations.Usuarios{})
+		db.AutoMigrate(&migrations.Roles{}, &migrations.Generos{}, &migrations.Usuarios{})
 	}
 
 	seeding, err := strconv.ParseBool(SEEDING)
@@ -53,8 +51,9 @@ func DBConnection() {
 	}
 
 	if seeding {
-		seeders.RolesSeeder(DB)
-		seeders.GenerosSeeder(DB)
-		seeders.UserSeeder(DB)
+		seeders.RolesSeeder(db)
+		seeders.GenerosSeeder(db)
+		seeders.UserSeeder(db)
 	}
+	return db
 }
