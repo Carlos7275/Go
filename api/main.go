@@ -14,9 +14,9 @@ import (
 //	@BasePath		/api
 //	@versionList
 //
-// @securityDefinitions.apikey Bearer
-// @in header
-// @name Authorization
+//	@securityDefinitions.apikey	Bearer
+//	@in							header
+//	@name						Authorization
 func main() {
 	mapper.Register(&migrations.Usuarios{})
 	mapper.Register(&dto.UsuariosDTO{})

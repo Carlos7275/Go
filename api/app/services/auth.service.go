@@ -28,6 +28,8 @@ func NewAuthServiceImpl(userRepository repositories.UserRepository) *AuthService
 
 func (s *AuthServiceImpl) Login(email string, password string) (string, error) {
 	user, err := s.userRepository.FindUser(email, password)
+
+	
 	if err != nil {
 		return "", err
 	}
@@ -64,7 +66,7 @@ func (s *AuthServiceImpl) Me(token string) (dto.UsuariosDTO, error) {
 
 func (s *AuthServiceImpl) RefreshToken(token string) (string, error) {
 	claims, _ := ExtractClaims(token)
-	go RevokeToken(token)
+	 RevokeToken(token)
 
 	idfloat := claims["id"].(float64)
 	id := int(idfloat)

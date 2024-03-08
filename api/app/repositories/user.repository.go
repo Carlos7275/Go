@@ -28,6 +28,10 @@ func (u UserRepositoryImpl) FindUser(email string, password string) (dto.Usuario
 
 	var err = u.db.Preload("Genero").Preload("Rol").Where("email = ?", email).First(&user).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// No se encontró ningún registro con el correo electrónico dado
+			return dto.UsuariosDTO{}, errors.New("¡Verifique sus Datos!")
+		}
 		return dto.UsuariosDTO{}, errors.New(err.Error())
 	}
 
@@ -37,7 +41,7 @@ func (u UserRepositoryImpl) FindUser(email string, password string) (dto.Usuario
 	}
 
 	if !valid {
-		return dto.UsuariosDTO{}, errors.New("¡Contraseña incorrecta!")
+		return dto.UsuariosDTO{}, errors.New("¡Verifique su Contraseña!")
 	}
 	var userMap dto.UsuariosDTO
 
