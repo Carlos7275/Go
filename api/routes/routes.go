@@ -21,13 +21,18 @@ func Init(init *config.Initialization) *gin.Engine {
 
 	api := router.Group("/api/v1")
 	{
-		user := api.Group("/auth")
-		user.POST("/login", init.AuthCtrl.Login)
-		user.GET("/me", middlewares.JWTMiddleware(), init.AuthCtrl.Me)
-		user.GET("/logout", middlewares.JWTMiddleware(), init.AuthCtrl.Logout)
-		user.GET("/refresh", middlewares.JWTMiddleware(), init.AuthCtrl.Refresh)
+		auth := api.Group("/auth")
+		auth.POST("/login", init.AuthCtrl.Login)
+		auth.GET("/me", middlewares.JWTMiddleware(), init.AuthCtrl.Me)
+		auth.GET("/logout", middlewares.JWTMiddleware(), init.AuthCtrl.Logout)
+		auth.GET("/refresh", middlewares.JWTMiddleware(), init.AuthCtrl.Refresh)
+
+		user := api.Group("/users")
+		user.POST("/", middlewares.JWTMiddleware(), init.UserCtrl.AddUser)
+		user.GET("/", init.UserCtrl.GetUsers)
 
 	}
+
 	router.Run(":8080")
 	return router
 }

@@ -53,6 +53,27 @@ definitions:
     - email
     - password
     type: object
+  requests.UserRequest:
+    properties:
+      apellidoMaterno:
+        type: string
+      apellidoPaterno:
+        type: string
+      email:
+        type: string
+      fechaNacimiento:
+        type: string
+      idgenero:
+        type: integer
+      idrol:
+        type: integer
+      nombres:
+        type: string
+      password:
+        type: string
+      telefono:
+        type: string
+    type: object
 info:
   contact: {}
   description: Ejemplo de API en Go Hecha por Carlos Sandoval.
@@ -165,6 +186,68 @@ paths:
       summary: Refresh
       tags:
       - Auth
+  /v1/users/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UsuariosDTO'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Get all  Users Registered
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Request
+        in: body
+        name: User
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Add User
+      tags:
+      - Users
 securityDefinitions:
   Bearer:
     in: header

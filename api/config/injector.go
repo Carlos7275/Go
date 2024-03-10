@@ -1,6 +1,7 @@
-// go:build wireinject 
-//go:build wireinject 
+//go:build wireinject
 // +build wireinject
+
+// go:build wireinject
 package config
 
 import (
@@ -18,9 +19,19 @@ var authCtrlSet = wire.NewSet(
 	wire.Bind(new(v1.AuthController), new(*v1.AuthControllerImpl)),
 )
 
+var userCtrlSet = wire.NewSet(
+	v1.UserControllerInit,
+	wire.Bind(new(v1.UserController), new(*v1.UserControllerImpl)),
+)
+
 var authServiceSet = wire.NewSet(
 	services.NewAuthServiceImpl,
 	wire.Bind(new(services.AuthService), new(*services.AuthServiceImpl)),
+)
+
+var userServiceSet = wire.NewSet(
+	services.NewUserServiceImpl,
+	wire.Bind(new(services.UserService), new(*services.UserServiceImpl)),
 )
 
 var userRepoSet = wire.NewSet(repositories.UserRepositoryInit,
@@ -28,6 +39,6 @@ var userRepoSet = wire.NewSet(repositories.UserRepositoryInit,
 )
 
 func Init() *Initialization {
-	wire.Build(NewInitialization, db, authCtrlSet, authServiceSet, userRepoSet)
+	wire.Build(NewInitialization, db, authCtrlSet, authServiceSet, userServiceSet, userRepoSet, userCtrlSet)
 	return nil
 }

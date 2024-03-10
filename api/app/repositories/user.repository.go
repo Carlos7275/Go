@@ -59,7 +59,15 @@ func (u UserRepositoryImpl) FindAllUser() ([]dto.UsuariosDTO, error) {
 	}
 
 	var usersMap []dto.UsuariosDTO
-	mapper.Mapper(&users, &usersMap)
+	for _, user := range users {
+		var userDTO dto.UsuariosDTO
+		err = mapper.Mapper(&user, &userDTO)
+		if err != nil {
+			log.Error("Error mapping user to DTO: ", err)
+			return nil, err
+		}
+		usersMap = append(usersMap, userDTO)
+	}
 
 	return usersMap, nil
 }
