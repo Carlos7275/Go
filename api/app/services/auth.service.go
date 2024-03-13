@@ -12,7 +12,7 @@ import (
 type AuthService interface {
 	Login(email string, password string) (string, error)
 	Logout(token string)
-	Me(token string) (dto.UsuariosDTO, error)
+	Me(token string) (*dto.UsuariosDTO, error)
 	RefreshToken(token string) (string, error)
 }
 
@@ -51,14 +51,14 @@ func (s *AuthServiceImpl) Logout(token string) {
 	go RevokeToken(token)
 
 }
-func (s *AuthServiceImpl) Me(token string) (dto.UsuariosDTO, error) {
+func (s *AuthServiceImpl) Me(token string) (*dto.UsuariosDTO, error) {
 	claims, _ := ExtractClaims(token)
 
 	idfloat := claims["id"].(float64)
 	id := int(idfloat)
 	user, err := s.userRepository.FindUserById(id)
 	if err != nil {
-		return dto.UsuariosDTO{}, err
+		return nil, err
 	}
 	return user, nil
 }

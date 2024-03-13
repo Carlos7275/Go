@@ -15,7 +15,7 @@ import (
 type UserRepository interface {
 	FindUser(email string, password string) (dto.UsuariosDTO, error)
 	FindAllUser() ([]dto.UsuariosDTO, error)
-	FindUserById(id int) (dto.UsuariosDTO, error)
+	FindUserById(id int) (*dto.UsuariosDTO, error)
 	Save(user *dto.UsuariosDTO) (dto.UsuariosDTO, error)
 	DeleteUserById(id int) error
 }
@@ -72,19 +72,19 @@ func (u UserRepositoryImpl) FindAllUser() ([]dto.UsuariosDTO, error) {
 	return usersMap, nil
 }
 
-func (u UserRepositoryImpl) FindUserById(id int) (dto.UsuariosDTO, error) {
+func (u UserRepositoryImpl) FindUserById(id int) (*dto.UsuariosDTO, error) {
 	user := migrations.Usuarios{
 		ID: id,
 	}
 	err := u.db.Preload("Genero").Preload("Rol").First(&user).Error
 	if err != nil {
 		log.Error("Got and error when find user by id. Error: ", err)
-		return dto.UsuariosDTO{}, err
+		return nil, err
 	}
 	var userMap dto.UsuariosDTO
 
 	mapper.Mapper(&user, &userMap)
-	return userMap, nil
+	return &userMap, nil
 }
 
 func (u UserRepositoryImpl) Save(user *dto.UsuariosDTO) (dto.UsuariosDTO, error) {

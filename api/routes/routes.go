@@ -28,8 +28,9 @@ func Init(init *config.Initialization) *gin.Engine {
 		auth.GET("/refresh", middlewares.JWTMiddleware(), init.AuthCtrl.Refresh)
 
 		user := api.Group("/users")
-		user.POST("/", middlewares.JWTMiddleware(), init.UserCtrl.AddUser)
-		user.GET("/", init.UserCtrl.GetUsers)
+		user.POST("", middlewares.JWTMiddleware(), init.UserCtrl.AddUser)
+		user.GET("", init.UserCtrl.GetUsers)
+		user.GET(":id", init.UserCtrl.FindUser)
 
 	}
 

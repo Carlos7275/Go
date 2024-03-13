@@ -3,9 +3,12 @@ package v1
 import (
 	"api/app/services"
 	"api/pkg"
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type UserController interface {
@@ -38,8 +41,37 @@ func (uc *UserControllerImpl) AddUser(c *gin.Context) {
 
 }
 
+// Get Users
+//
+//	@Summary	Get User
+//	@Tags		Users
+//	@Accept		json
+//
+// @Param        id   path      int  true  "User Id"
+//
+//	@Produce	json
+//	@Success	200	{object}	dto.UsuariosDTO
+//	@Failure	400	{string}	string
+//	@Failure	401	{string}	string
+//	@Failure	500	{string}	string
+//
+//	@Router		/v1/users/{id} [GET]
+//
+//	@Security	Bearer
 func (uc *UserControllerImpl) FindUser(c *gin.Context) {
+	strid := c.Param("id")
+	id, _ := strconv.Atoi(strid)
 
+	user, err := uc.svc.FindUser(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, pkg.BuildResponse__("No se encontro el usuario"))
+		} else {
+			c.JSON(http.StatusInternalServerError, pkg.BuildResponse__(err.Error()))
+		}
+		return
+	}
+	c.JSON(http.StatusOK, pkg.BuildResponse_("Operacion Exitosa", user))
 }
 
 // Get Users
@@ -48,7 +80,7 @@ func (uc *UserControllerImpl) FindUser(c *gin.Context) {
 //	@Tags		Users
 //	@Accept		json
 //	@Produce	json
-//	@Success	200	{object}	dto.UsuariosDTO
+//	@Success	200	{object}	[]dto.UsuariosDTO
 //	@Failure	400	{string}	string
 //	@Failure	401	{string}	string
 //	@Failure	500	{string}	string
@@ -59,7 +91,7 @@ func (uc *UserControllerImpl) FindUser(c *gin.Context) {
 func (uc *UserControllerImpl) GetUsers(c *gin.Context) {
 	users, err := uc.svc.GetUsers()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error)
+		c.JSON(http.StatusBadRequest, pkg.BuildResponse__(err.Error()))
 	}
 	c.JSON(http.StatusOK, pkg.BuildResponse_("Operacion exitosa", users))
 }

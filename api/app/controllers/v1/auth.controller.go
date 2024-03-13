@@ -96,7 +96,7 @@ func (ac *AuthControllerImpl) Me(c *gin.Context) {
 func (ac *AuthControllerImpl) Logout(c *gin.Context) {
 	ac.Logout(c)
 	c.JSON(http.StatusOK, pkg.BuildResponse__("Se cerro sesion con exito"))
-
+	return
 }
 
 // RefreshToken

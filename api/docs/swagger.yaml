@@ -196,7 +196,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.UsuariosDTO'
+            items:
+              $ref: '#/definitions/dto.UsuariosDTO'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -246,6 +248,40 @@ paths:
       security:
       - Bearer: []
       summary: Add User
+      tags:
+      - Users
+  /v1/users/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UsuariosDTO'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: Get User
       tags:
       - Users
 securityDefinitions:
